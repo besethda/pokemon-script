@@ -1,6 +1,5 @@
 let gamestopped = false
 let trainername
-let choice = false
 let starterpokemon = ''
 let myPokemon = ''
 let enemyPokemon 
@@ -11,6 +10,7 @@ let currentEffectiveness
 let currentEnemyHealth
 let currentPokemonHealth
 let currentAttackDamage
+let enemyHealth
 
 
 //The types chart-
@@ -65,7 +65,7 @@ class pokemon {
 }
 
 //The pokemon list-
-const SQUIRTLE = new pokemon('Squirtle', WATER_TYPE, [BUBBLE, TACKLE, WATER_GUN, EMPTY], 200) 
+const SQUIRTLE = new pokemon('Squirtle', WATER_TYPE, [BUBBLE, TACKLE, WATER_GUN], 200) 
 // const WARTORTLE
 // const BLASTOISE
 // const BULBASAUR
@@ -74,10 +74,10 @@ const SQUIRTLE = new pokemon('Squirtle', WATER_TYPE, [BUBBLE, TACKLE, WATER_GUN,
 // const CHARMANDER
 const CHARMELEON = new pokemon('Charmeleon', FIRE_TYPE, [EMBER, FLAME_WHEEL, QUICK_ATTACK, METAL_CLAW], 600)
 // const CHARIZARD
-const ODDISH = new pokemon('Oddish', GRASS_TYPE, [TACKLE, EMPTY, EMPTY, EMPTY], 160)
+const ODDISH = new pokemon('Oddish', GRASS_TYPE, [TACKLE], 160)
 // const GLOOM
 // const VILEPLUME
-const RATTATA = new pokemon('Rattata', NORMAL_TYPE, [TACKLE, QUICK_ATTACK, EMPTY, EMPTY], 160)
+const RATTATA = new pokemon('Rattata', NORMAL_TYPE, [TACKLE, QUICK_ATTACK], 160)
 // const RATICATE
 const VULPIX = new pokemon('Vulpix', FIRE_TYPE, [EMBER, FLAME_WHEEL, QUICK_ATTACK, TACKLE], 160)
 // const NINETALES
@@ -104,29 +104,39 @@ function setEnemyPokemon(Name) {
 
 function setCurrentPokemon(Name){
   currentPokemon = Name
-  console.log(`set current pokemon to ${currentPokemon}. HP: `)
+  currentPokemonHealth = Name.hp
+  console.log(`set current pokemon to ${currentPokemon}. HP: ${currentPokemonHealth}`)///DONT FORGET TO CHANGE THIS
 }
 
 function useCurrentAttack(number, pokemon){
-  let currentMove = pokemon.moves[number-1].moveName
+  let currentMove = pokemon.moves[number].moveName
   return currentMove
 }
 
 function returnDamage(pokemon, attack, effectiveness) {
-  let damage = pokemon.moves[attack-1].damage
+  let damage = pokemon.moves[attack].damage
   if (effectiveness === " It's super effective!") {
     damage = damage * 1.5
-    return `${damage} damage.` 
+    return damage
   } else if (effectiveness === " It's not very effective..") {
     damage = damage * .5
-    return `${damage} damage.` 
+    return damage 
   } else {
-    return `${damage} damage.` 
+    return damage 
   }
 }
 
+function returnEnemyHealth(damageDone){
+  currentEnemyHealth = currentEnemyHealth - damageDone
+  return currentEnemyHealth
+}
+
+function returnPokemonHealth(damageDone){
+  currentPokemonHealth = currentPokemonHealth - damageDone
+  return currentPokemonHealth
+}
+
 function calculateEffect(pokemon, move, enemyPokemon) {
-  move = move -1
   let effect = ''
   for (let i = 0; i < enemyPokemon.type[1].length; i++) {
     if (pokemon.moves[move].moveType[2][0] === enemyPokemon.type[1][i]) {
@@ -172,21 +182,35 @@ function chooseActivePokemon(pokemonChoice) {
   }
 }
 
+function randomMove(pokemon) {
+  let randomNumber = Math.floor(Math.random() * pokemon.moves.length)
+  alert(randomNumber)
+  return randomNumber
+}
+
+function pokemonAppears() {
+  return `A wild ${enemyPokemon.name} appeared! Go, ${currentPokemon.name}! `}
 function fightMessage() {
-  return `A wild ${enemyPokemon.name} appeared! What would you like to do? please type 'fight', 'change' (to change pokemon) or 'flee'`}
+  return  `What would you like to do? Please type 'fight', 'change' (to change pokemon) or 'flee'`}
 function fleeMessage() { 
   return `You chose to flee! You run away with the ${enemyPokemon.name} nipping at your heels.`}
 function choosePokemon() {
    return `Please choose a pokemon to battle with:`}
 function attackPrompt() {
-  return `Go, ${currentPokemon.name}! Choose an attack for ${currentPokemon.name} to use: `}
-function attackAction(move) {
-  return `${currentPokemon.name} used ${move}!` }
+  return `Choose an attack for ${currentPokemon.name} to use: `}
+function attackAction(pokemon, move) {
+  return `${pokemon.name} used ${move}!`}
 function enemyDamageMessage() {
   return ` Enemy ${enemyPokemon.name} took `}
+function pokemonDamageMessage() {
+  return ` Your ${currentPokemon.name} took `}
+function winMessage() {
+  return `The ${enemyPokemon.name} was defeated.`
+}
 
 
-while (!gamestopped) {
+  /////////BEGINNING OF THE GAME//////////
+
 
   alert('Hello there! Welcome to the world of Pokémon! This world is inhabited by creatures called Pokémon! For some people, Pokémon are pets. Other use them for fights.')
   trainername= prompt('Right... So what is your name?')
@@ -226,11 +250,10 @@ while (!gamestopped) {
         break
     }
   }
-
   let battleGoing = true
   restartLoop:
   while (battleGoing === true) {
-    decision = prompt(fightMessage())
+    decision = prompt(`A wild ${enemyPokemon.name} Appeared! ${fightMessage()}`)
     if (decision === 'flee') {
       alert(`Can't Escape!`)
       continue restartLoop
@@ -239,16 +262,32 @@ while (!gamestopped) {
       continue restartLoop
     } else if (decision === 'fight'){
       setCurrentPokemon(CHARMELEON)
-      alert(`'Oh! ${trainername}, there you are. Looks like you need some help! Here - use my ${currentPokemon.name}.'`)
-      alert(`${trainername}, this is a great opportunity to teach you something about being a trainer! Every pokémon has strengths and weaknesses.
-      If you use an attack type on a pokémon that it is weak against, it will do more damage, and you'll be able to defeat it. However if your attack is weak against a pokemon, it will likely endure your attack and return an attack to your pokémon!           ${trainername}, I'll let you give it a go!`) 
-        
-        userAttackChoice = prompt(attackPrompt() + findAttack(currentPokemon))
-        currentEffectiveness = calculateEffect(currentPokemon, userAttackChoice, enemyPokemon)
-        currentAttackDamage = returnDamage(currentPokemon, userAttackChoice, currentEffectiveness)
-        alert(attackAction(useCurrentAttack(userAttackChoice, currentPokemon)) + currentEffectiveness + enemyDamageMessage() + currentAttackDamage)
-
-        
-      }
+      battleGoing = false
+    } else {
+      setCurrentPokemon(CHARMELEON)
+    }
   }
-}
+
+alert(`'Oh! ${trainername}, there you are. Looks like you need some help! Here - use my ${currentPokemon.name}.'`)
+alert(`${trainername}, this is a great opportunity to teach you something about being a trainer! Every pokémon has strengths and weaknesses.
+  If you use an attack type on a pokémon that it is weak against, it will do more damage, and you'll be able to defeat it. However if your attack is weak against a pokemon, it will likely endure your attack and return an attack to your pokémon! ${trainername}, I'll let you give it a go!`) 
+  let enemyFainted = false
+  while (!enemyFainted) {
+    userAttackChoice = (prompt(attackPrompt() + findAttack(currentPokemon)) - 1)
+    currentEffectiveness = calculateEffect(currentPokemon, userAttackChoice, enemyPokemon)
+    currentAttackDamage = returnDamage(currentPokemon, userAttackChoice, currentEffectiveness)
+    alert(attackAction(currentPokemon, useCurrentAttack(userAttackChoice, currentPokemon)) + currentEffectiveness + enemyDamageMessage() + currentAttackDamage + ' damage.')
+    returnEnemyHealth(currentAttackDamage)
+    if (currentEnemyHealth <= 0){
+      enemyFainted = true
+      alert(winMessage())
+    } else {
+      alert(`Your ${currentPokemon.name} has ${currentPokemonHealth} HP, Enemy ${enemyPokemon.name} has ${currentEnemyHealth} HP.`)
+    }
+    let moveNumber = randomMove(enemyPokemon)
+    currentEffectiveness = calculateEffect(enemyPokemon, moveNumber, currentPokemon)
+    currentAttackDamage = returnDamage(enemyPokemon, moveNumber, currentEffectiveness)
+    alert(attackAction(enemyPokemon, enemyPokemon.moves[moveNumber].moveName) + currentEffectiveness + pokemonDamageMessage() + currentAttackDamage + ' damage.')
+    returnPokemonHealth(currentAttackDamage)
+    
+  }
