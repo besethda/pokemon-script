@@ -1,7 +1,6 @@
-let gamestopped = false
+let gameStopped = false
 let trainername
-let starterpokemon = ''
-let myPokemon = ''
+let myPokemon = []
 let enemyPokemon 
 let currentPokemon
 let currentAttack
@@ -11,6 +10,7 @@ let currentEnemyHealth
 let currentPokemonHealth
 let currentAttackDamage
 let enemyHealth
+let currentLocation
 
 
 //The types chart-
@@ -95,6 +95,28 @@ const WINGULL = new pokemon('Wingull', WATER_TYPE, [WATER_GUN, BUBBLE, TACKLE], 
 // const ONIX
 // const MANKEY
 // const PRIMEAPE
+
+//////LOCATIONS///////
+
+const LOCATIONS = ['Wispwood pokémon center', 'mountain path', 'lake path', 'forest path', 'research center']
+
+/////////FUNCTIONS/////////
+
+function setCurrentLocation(location) {
+  currentLocation = location
+}
+
+function createPlaceList() {
+    newList = LOCATIONS.filter(location => location !== currentLocation)
+}
+
+function createPlaceString(list) {
+  let locationString = ''
+  for (i = 1; i-1 < list.length; i++) {
+    locationString = locationString + `  ${i}. ` + list[i-1]
+  }
+  return locationString
+}
 
 function setEnemyPokemon(Name) {
   enemyPokemon = Name
@@ -184,7 +206,6 @@ function chooseActivePokemon(pokemonChoice) {
 
 function randomMove(pokemon) {
   let randomNumber = Math.floor(Math.random() * pokemon.moves.length)
-  alert(randomNumber)
   return randomNumber
 }
 
@@ -205,89 +226,151 @@ function enemyDamageMessage() {
 function pokemonDamageMessage() {
   return ` Your ${currentPokemon.name} took `}
 function winMessage() {
-  return `The ${enemyPokemon.name} was defeated.`
-}
-
+  return `The ${enemyPokemon.name} fainted. You won the match!`}
+function loseMessage() {
+  return `Your ${currentPokemon.name} fainted.`}
+function whiteoutMessage() {
+  return `Your ${currentPokemon} was defeated. You ran out of pokemon! You scurry back to the pokemon center to heal your pokemon.`}
 
   /////////BEGINNING OF THE GAME//////////
 
 
-  alert('Hello there! Welcome to the world of Pokémon! This world is inhabited by creatures called Pokémon! For some people, Pokémon are pets. Other use them for fights.')
-  trainername= prompt('Right... So what is your name?')
-  alert(`Welcome, ${trainername}.`)
-  alert('You story begins in the village of Wispwood Town, bordered by mountains on one side and a mysterious forest on the other. Wispwood has a long legacy of pokémon trainers, and every year new trainers are given their very own pokémon partner so they can make their own mark on the world.')
-  alert(`You're lucky, ${trainername}, because today is your choosing day! You excitedly make your way to the pokémon research center, ready to meet your pokémon.`)
-  alert(`You are surprised when you SMACK into someone at the entrance to the center!`)
-  alert(`'Oh..erm you must be ${trainername}! I'm terribly sorry but we've had a break-in here at the research center! All of our pokémon are gone!'`)
-  alert(`'${trainername}, I'm sorry but I have no pokemon to give you....... Let me think... That's it! ${trainername}, please come with me.`)
-  alert(`You follow the man and head uncertainly into the forest. The darkness surrounds you and you realize that the man isn't front of you any longer! You run forwards after him, and come to a fork in the path. The sign says:  <--LAKE PATH .... FOREST PATH.... MOUNTAIN PATH-->`)
-  let choice = false
-  while (choice === false){
-    let terrainChoice = prompt(`Which path do you choose? Enter: lake, mountain, forest or home`)
-    switch (terrainChoice) {
-      case ('lake') :
-        alert(`Without hesitation, you head towards the lake. You start to hear the sound of flapping behind you getting closer and closer until.. `)
-        setEnemyPokemon(WINGULL)
-        choice = true
-        break
-      case ('mountain') :
-        alert(`Without hesitation, you head towards the mountain path. You start to hear something growling behind you. You run faster, but it's catching up...`)
-        setEnemyPokemon(VULPIX)
-        choice = true
-        break
-      case ('forest') :
-        alert(`Without hesitation, you continue through the forest, hoping that you'll catch up with the man. You start hearing thumping behind you, and you trip over something round...`)
-        setEnemyPokemon(ODDISH)
-        choice = true
-        break
-      case ('home') :
-        alert(`In panic, you turn around and flee back through the forest. You hear chattering behind you and freeze in your tracks. You then turn around slowly...`)
-        setEnemyPokemon(RATTATA)
+//   alert('Hello there! Welcome to the world of Pokémon! This world is inhabited by creatures called Pokémon! For some people, Pokémon are pets. Other use them for fights.')
+//   trainername= prompt('Right... So what is your name?')
+//   alert(`Welcome, ${trainername}.`)
+//   alert('You story begins in the village of Wispwood Town, bordered by mountains on one side and a mysterious forest on the other. Wispwood has a long legacy of pokémon trainers, and every year new trainers are given their very own pokémon partner so they can make their own mark on the world.')
+//   alert(`You're lucky, ${trainername}, because today is your choosing day! You excitedly make your way to the pokémon research center, ready to meet your pokémon.`)
+//   alert(`You are surprised when you SMACK into someone at the entrance to the center!`)
+//   alert(`'Oh..erm you must be ${trainername}! I'm terribly sorry but there's been a disaster here at the research center. All of our pokémon have escaped into the nearby area!'`)
+//   alert(`'${trainername}, I'm sorry but I have no pokemon to give you.
+//     ...... Let me think... That's it! ${trainername}, please come with me.`)
+//   alert(`You follow the man and head uncertainly into the forest. The darkness surrounds you and you realize that the man isn't front of you any longer! You run forwards after him, and come to a fork in the path. The sign says:  
+//     <--LAKE PATH 
+//      FOREST PATH 
+//       MOUNTAIN PATH-->`)
+//   let choice = false
+//   while (choice === false){
+//     let terrainChoice = prompt(`Which path do you choose? Enter: lake, mountain, forest or home`)
+//     switch (terrainChoice) {
+//       case ('lake') :
+//         alert(`Without hesitation, you head towards the lake. You start to hear the sound of flapping behind you getting closer and closer until.. `)
+//         setEnemyPokemon(WINGULL)
+//         setCurrentLocation('lake path')
+//         choice = true
+//         break
+//       case ('mountain') :
+//         alert(`Without hesitation, you head towards the mountain path. You start to hear something growling behind you. You run faster, but it's catching up...`)
+//         setEnemyPokemon(VULPIX)
+//         setCurrentLocation('mountain path')
+//         choice = true
+//         break
+//       case ('forest') :
+//         alert(`Without hesitation, you continue through the forest, hoping that you'll catch up with the man. You start hearing thumping behind you, and you trip over something round...`)
+//         setEnemyPokemon(ODDISH)
+//         setCurrentLocation('forest path')
+//         choice = true
+//         break
+//       case ('home') :
+//         alert(`In panic, you turn around and flee back through the forest. You hear chattering behind you and freeze in your tracks. You then turn around slowly...`)
+//         setEnemyPokemon(RATTATA)
+//         setCurrentLocation('forest path')
 
-        choice = true
-        break
-      default :
-        break
-    }
-  }
-  let battleGoing = true
-  restartLoop:
-  while (battleGoing === true) {
-    decision = prompt(`A wild ${enemyPokemon.name} Appeared! ${fightMessage()}`)
-    if (decision === 'flee') {
-      alert(`Can't Escape!`)
-      continue restartLoop
-    } else if (decision === 'change') {
-      alert(`You don't have any pokémon to choose from!`)
-      continue restartLoop
-    } else if (decision === 'fight'){
-      setCurrentPokemon(CHARMELEON)
-      battleGoing = false
-    } else {
-      setCurrentPokemon(CHARMELEON)
-    }
-  }
+//         choice = true
+//         break
+//       default :
+//         break
+//     }
+//   }
+//   let battleGoing = true
+//   restartLoop:
+//   while (battleGoing === true) {
+//     decision = prompt(`A wild ${enemyPokemon.name} Appeared! ${fightMessage()}`)
+//     if (decision === 'flee') {
+//       alert(`Can't Escape!`)
+//       continue restartLoop
+//     } else if (decision === 'change') {
+//       alert(`You don't have any pokémon to choose from!`)
+//       continue restartLoop
+//     } else if (decision === 'fight'){
+//       setCurrentPokemon(CHARMELEON)
+//       battleGoing = false
+//     } else {
+//       setCurrentPokemon(CHARMELEON)
+//     }
+//   }
 
-alert(`'Oh! ${trainername}, there you are. Looks like you need some help! Here - use my ${currentPokemon.name}.'`)
-alert(`${trainername}, this is a great opportunity to teach you something about being a trainer! Every pokémon has strengths and weaknesses.
-  If you use an attack type on a pokémon that it is weak against, it will do more damage, and you'll be able to defeat it. However if your attack is weak against a pokemon, it will likely endure your attack and return an attack to your pokémon! ${trainername}, I'll let you give it a go!`) 
-  let enemyFainted = false
-  while (!enemyFainted) {
-    userAttackChoice = (prompt(attackPrompt() + findAttack(currentPokemon)) - 1)
-    currentEffectiveness = calculateEffect(currentPokemon, userAttackChoice, enemyPokemon)
-    currentAttackDamage = returnDamage(currentPokemon, userAttackChoice, currentEffectiveness)
-    alert(attackAction(currentPokemon, useCurrentAttack(userAttackChoice, currentPokemon)) + currentEffectiveness + enemyDamageMessage() + currentAttackDamage + ' damage.')
-    returnEnemyHealth(currentAttackDamage)
-    if (currentEnemyHealth <= 0){
-      enemyFainted = true
-      alert(winMessage())
-    } else {
-      alert(`Your ${currentPokemon.name} has ${currentPokemonHealth} HP, Enemy ${enemyPokemon.name} has ${currentEnemyHealth} HP.`)
-    }
-    let moveNumber = randomMove(enemyPokemon)
-    currentEffectiveness = calculateEffect(enemyPokemon, moveNumber, currentPokemon)
-    currentAttackDamage = returnDamage(enemyPokemon, moveNumber, currentEffectiveness)
-    alert(attackAction(enemyPokemon, enemyPokemon.moves[moveNumber].moveName) + currentEffectiveness + pokemonDamageMessage() + currentAttackDamage + ' damage.')
-    returnPokemonHealth(currentAttackDamage)
-    
-  }
+// alert(`'Oh! ${trainername}, there you are. Looks like you need some help! Here - use my ${currentPokemon.name}.'`)
+// alert(`${trainername}, this is a great opportunity to teach you something about being a trainer! Every pokémon has strengths and weaknesses.
+// If you use an attack type on a pokémon that it is weak against, it will do more damage, and you'll be able to defeat it. However if your attack is weak against a pokemon, it will likely endure your attack and return an attack to your pokémon! ${trainername}, I'll let you give it a go!`) 
+// userAttackChoice = (prompt(attackPrompt() + findAttack(currentPokemon)) - 1)
+// currentEffectiveness = calculateEffect(currentPokemon, userAttackChoice, enemyPokemon)
+// currentAttackDamage = returnDamage(currentPokemon, userAttackChoice, currentEffectiveness)
+// alert(attackAction(currentPokemon, useCurrentAttack(userAttackChoice, currentPokemon)) + currentEffectiveness + enemyDamageMessage() + currentAttackDamage + ' damage.')
+// returnEnemyHealth(currentAttackDamage)
+// if (currentEnemyHealth <= 0){
+//   matchOver = true
+//   alert(winMessage())
+// } else if (currentEnemyHealth < 60) {
+//  } else {
+//   alert(`Your ${currentPokemon.name} has ${currentPokemonHealth} HP, Enemy ${enemyPokemon.name} has ${currentEnemyHealth} HP.`)
+// }
+// let moveNumber = randomMove(enemyPokemon)
+// currentEffectiveness = calculateEffect(enemyPokemon, moveNumber, currentPokemon)
+// currentAttackDamage = returnDamage(enemyPokemon, moveNumber, currentEffectiveness)
+// alert(attackAction(enemyPokemon, enemyPokemon.moves[moveNumber].moveName) + currentEffectiveness + pokemonDamageMessage() + currentAttackDamage + ' damage.')
+// returnPokemonHealth(currentAttackDamage)
+// if (currentPokemonHealth <= 0) {
+//   matchOver = true
+//   alert(loseMessage())
+// } else {
+//   alert(`Your ${currentPokemon.name} has ${currentPokemonHealth} HP, Enemy ${enemyPokemon.name} has ${currentEnemyHealth} HP.`)
+// } 
+// alert(`'Wooah there, ${trainername}. Hold on! Once you've lowered a pokémons health it will become easier to capture it inside a pokéball. Here- try catching this ${enemyPokemon.name}.'
+//    You throw the pokéball.  ....  .... `)
+// alert(`Congratulations! Your first pokémon, ${enemyPokemon.name} was caught!`)
+// alert(`'Well done, ${trainername}! You seem to be a natural at catching pokemon. .... I know! Maybe you can help me find our lost Pokemon! How does that sound, ${trainername}?
+//   You nod your head eagerly
+//   Splendid! Report back to me anytime you want to find out how many pokemon you've caught. You'll need to head back to Wispwood to heal up.`)
+
+currentLocation = 'mountain path'
+
+while (!gameStopped) {
+  prompt(`Current Location: ${currentLocation}. 
+
+    Where would you like to go? ${createPlaceList()}`)
+
+
+
+  
+  gameStopped = true  
+}
+
+
+
+
+  // while (!matchOver) {
+  //   userAttackChoice = (prompt(attackPrompt() + findAttack(currentPokemon)) - 1)
+  //   currentEffectiveness = calculateEffect(currentPokemon, userAttackChoice, enemyPokemon)
+  //   currentAttackDamage = returnDamage(currentPokemon, userAttackChoice, currentEffectiveness)
+  //   alert(attackAction(currentPokemon, useCurrentAttack(userAttackChoice, currentPokemon)) + currentEffectiveness + enemyDamageMessage() + currentAttackDamage + ' damage.')
+  //   returnEnemyHealth(currentAttackDamage)
+  //   if (currentEnemyHealth <= 0){
+  //     matchOver = true
+  //     alert(winMessage())
+  //     break
+  //   } else {
+  //     alert(`Your ${currentPokemon.name} has ${currentPokemonHealth} HP, Enemy ${enemyPokemon.name} has ${currentEnemyHealth} HP.`)
+  //   }
+  //   let moveNumber = randomMove(enemyPokemon)
+  //   currentEffectiveness = calculateEffect(enemyPokemon, moveNumber, currentPokemon)
+  //   currentAttackDamage = returnDamage(enemyPokemon, moveNumber, currentEffectiveness)
+  //   alert(attackAction(enemyPokemon, enemyPokemon.moves[moveNumber].moveName) + currentEffectiveness + pokemonDamageMessage() + currentAttackDamage + ' damage.')
+  //   returnPokemonHealth(currentAttackDamage)
+  //   if (currentPokemonHealth <= 0) {
+  //     matchOver = true
+  //     alert(loseMessage())
+  //     break
+  //   } else {
+  //     alert(`Your ${currentPokemon.name} has ${currentPokemonHealth} HP, Enemy ${enemyPokemon.name} has ${currentEnemyHealth} HP.`)
+  //   }
+  // }
