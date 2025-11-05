@@ -41,11 +41,21 @@ const CHARIZARD = new pokemon('Charizard', FIRE_TYPE, [FLAMETHROWER, AERIAL_ACE,
 
 ///////FUNCTIONS////////
 
-const printAction = (action) => {
-  const actionBox = document.querySelector('.action-box')
-  const actionText = document.createElement('p')
-  actionText.textContent = action
-  actionBox.appendChild(actionText)
+let userPokemon
+let gamePokemon
+
+const clearText = () => document.querySelector('.game-text').textContent = ''
+
+const printAction = (action, i=0) => {
+  let speed = 30
+  const actionText = document.querySelector('.game-text')
+  if (actionText.textContent === 0){
+    actionText.textContent = ''
+  } if (i < action.length) {
+    actionText.textContent += action.charAt(i)
+    i++
+    setTimeout(() => printAction(action, i++), speed)
+  }
 }
 
 const generateRandomNumber = (range) => {
@@ -56,24 +66,47 @@ const generateRandomNumber = (range) => {
 const chooseGamePokemon = () => {
   choice = generateRandomNumber(3)
   let availablePokemon = [BLASTOISE, VENUSAUR, CHARIZARD]
-  let userPokemon = (availablePokemon[choice])
+  userPokemon = (availablePokemon[choice])
+  let leftPokemon = availablePokemon.filter((pokemon) => pokemon !== availablePokemon[choice])
+  choice = generateRandomNumber(2)
+  gamePokemon =leftPokemon[choice]
+  printAction(`You got ${userPokemon.name}! Pick a move for ${userPokemon.name} to use:`)
   return
 }
 
+const useAttack = (move) => {
+  const MOVEDIV = document.querySelector('.move-div')
+  MOVEDIV.remove()
+  clearText()
+  printAction(`${userPokemon.name} used ${move}!`)
+}
+
 const listAttacks = (attackingPokemon) => {
-  let moveList = ''
+  const textArea = document.querySelector('.text-area')
+  const MOVEDIV = document.createElement('div')
+  MOVEDIV.className = 'move-div'
+  textArea.appendChild(MOVEDIV)
   attackingPokemon.moves.forEach(move => {
-    moveList = moveList + ` ${move[0]}`
+    let activeMove = document.createElement('button')
+    activeMove.className = 'move-btn'
+    activeMove.textContent = move.moveName
+    MOVEDIV.appendChild(activeMove)
   });
-  console.log(moveList)
 }
 
 const attack = (attacker, victim) => {
 
 }
 
-listAttacks(CHARIZARD)
+chooseGamePokemon()
+listAttacks(userPokemon)
+
+let movesList = Array.from(document.querySelectorAll('.move-btn'))
+movesList.forEach(move => {
+  move.addEventListener('click', () => useAttack(move.textContent))
+});
+
 /////////STORY//////////
 
-let userPokemon = chooseUserPokemon()
-let 
+// let userPokemon = chooseUserPokemon()
+// let 
