@@ -1,3 +1,28 @@
 body {
   background-color: black;
+  background: linear-gradient(to right, black, rgb(56, 56, 56));
+}
+
+.header {
+  height: 9vh;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+}
+
+.title {
+  margin: 0;
+  padding: 0;
+
+  span img {
+    width: 2.5rem;
+  }
+}
+
+.main {
+  height: 80%;
+  width: 80%;
+  background-color: black;
 }
