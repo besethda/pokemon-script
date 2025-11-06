@@ -35,19 +35,56 @@ class pokemon {
   }
 }
 
-const BLASTOISE = new pokemon('Blastoise', WATER_TYPE, [SURF, BITE, SKULL_BASH, WATERFALL], 280)
-const VENUSAUR = new pokemon('Venusaur', GRASS_TYPE, [SOLAR_BEAM, SLUDGE_BOMB, BODY_SLAM, RAZOR_LEAF], 284)
-const CHARIZARD = new pokemon('Charizard', FIRE_TYPE, [FLAMETHROWER, AERIAL_ACE, SLASH, FIRE_SPIN], 277)
+const BLASTOISE = new pokemon('Blastoise', [WATER_TYPE], [SURF, BITE, SKULL_BASH, WATERFALL], 280)
+const VENUSAUR = new pokemon('Venusaur', [GRASS_TYPE, POISON_TYPE], [SOLAR_BEAM, SLUDGE_BOMB, BODY_SLAM, RAZOR_LEAF], 284)
+const CHARIZARD = new pokemon('Charizard', [FIRE_TYPE, FLYING_TYPE], [FLAMETHROWER, AERIAL_ACE, SLASH, FIRE_SPIN], 277)
 
 ///////FUNCTIONS////////
 
 let userPokemon
+let userPokemonHealth
 let gamePokemon
+let gamepokemonHealth
 
 const clearText = () => document.querySelector('.game-text').textContent = ''
 
+const clearMoves = () =>   document.querySelector('.move-div').remove()
+
+const addPlayBtn = () => {
+  const textArea = document.querySelector('.text-area')
+  const MOVEDIV = document.createElement('div')
+  MOVEDIV.className = 'move-div'
+  const playBtn = document.createElement('button')
+  playBtn.textContent = 'Play Game'
+  playBtn.className = 'play-btn'
+  MOVEDIV.appendChild(playBtn)
+  textArea.appendChild(MOVEDIV)
+  playBtn.addEventListener('click', chooseGamePokemon)
+}
+
+const calculateEffectiveness = (currentPokemon, currentMove, damagedPokemon) =>{
+  let moveClass, message = '', damage = 1
+  currentPokemon.moves.forEach(move => {
+    if (move.moveName === currentMove){
+      moveClass = move
+    } });
+    for (let i =0; i < damagedPokemon.type.length; i++){
+      if (moveClass.moveType[0].includes(damagedPokemon.type[i][2][0])){
+        damage = 1.5
+        message = ` It's super effective!`
+      } else if (moveClass.moveType[1].includes(damagedPokemon.type[i][2][0])) {
+        damage = .5
+        message = ` It's not very effective...`
+      } 
+    }
+    damage = damage * moveClass.damage
+    damagedPokemon.hp -= damage
+    message += ` ${damagedPokemon.name} took ${damage} damage.`
+    return message
+}
+
 const printAction = (action, i=0) => {
-  let speed = 30
+  let speed = 20
   const actionText = document.querySelector('.game-text')
   if (actionText.textContent === 0){
     actionText.textContent = ''
@@ -63,50 +100,65 @@ const generateRandomNumber = (range) => {
   return number
 }
 
+const gameAttack = () => {
+  number = generateRandomNumber(4)
+  useGameAttack(gamePokemon, gamePokemon.moves[number].moveName)
+  document.addEventListener('keydown', listAttacks)
+}
+
+const pickAttack = () => printAction(`Pick a move for ${userPokemon} to use:`)
+
 const chooseGamePokemon = () => {
   choice = generateRandomNumber(3)
   let availablePokemon = [BLASTOISE, VENUSAUR, CHARIZARD]
-  userPokemon = (availablePokemon[choice])
+  userPokemon = availablePokemon[choice]
+  userPokemonHealth = availablePokemon[choice].hp
   let leftPokemon = availablePokemon.filter((pokemon) => pokemon !== availablePokemon[choice])
   choice = generateRandomNumber(2)
   gamePokemon =leftPokemon[choice]
-  printAction(`You got ${userPokemon.name}! Pick a move for ${userPokemon.name} to use:`)
+  gamePokemonHealth = leftPokemon[choice].hp
+  playBtn = document.querySelector('.play-btn')
+  playBtn.remove()
+  printAction(`You got ${userPokemon.name}! Your enemy is ${gamePokemon.name}. Pick a move for ${userPokemon.name} to use:`)
+  listAttacks(userPokemon)
   return
 }
 
-const useAttack = (move) => {
-  const MOVEDIV = document.querySelector('.move-div')
-  MOVEDIV.remove()
+const useGameAttack = (attackingPokemon, move) =>   {
   clearText()
-  printAction(`${userPokemon.name} used ${move}!`)
+  printAction(`${attackingPokemon.name} used ${move}!`)
+  document.addEventListener('keydown', gameAttack)
 }
 
-const listAttacks = (attackingPokemon) => {
+const useAttack = (attackingPokemon, move) => {
+  const MOVEDIV = document.querySelector('.move-div')
+  MOVEDIV.remove()
+  clearText(), clearMoves()
+  printAction(`${attackingPokemon.name} used ${move}!` + calculateEffectiveness(attackingPokemon, move, gamePokemon))
+  document.addEventListener('keydown', gameAttack)
+}
+
+const listAttacks = () => {
   const textArea = document.querySelector('.text-area')
   const MOVEDIV = document.createElement('div')
   MOVEDIV.className = 'move-div'
   textArea.appendChild(MOVEDIV)
-  attackingPokemon.moves.forEach(move => {
+  userPokemon.moves.forEach(move => {
     let activeMove = document.createElement('button')
     activeMove.className = 'move-btn'
     activeMove.textContent = move.moveName
     MOVEDIV.appendChild(activeMove)
+    activeMove.addEventListener('click', () => useAttack(userPokemon, activeMove.textContent))
   });
 }
 
 const attack = (attacker, victim) => {
 
 }
-
-chooseGamePokemon()
-listAttacks(userPokemon)
-
-let movesList = Array.from(document.querySelectorAll('.move-btn'))
-movesList.forEach(move => {
-  move.addEventListener('click', () => useAttack(move.textContent))
-});
+// chooseGamePokemon()
+// listAttacks(userPokemon)
 
 /////////STORY//////////
 
-// let userPokemon = chooseUserPokemon()
-// let 
+addPlayBtn()
+

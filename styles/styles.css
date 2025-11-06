@@ -69,10 +69,12 @@ img {
 
 .move-div {
   width: 100%;
+  height: fit-content;
   display: flex;
   justify-content: space-around;
 }
 
+.play-btn,
 .move-btn {
   width: 20%;
   padding: 5px 0;
@@ -83,6 +85,8 @@ img {
   transition: all 0.2s ease-in-out;
 }
 
-.move-btn:hover {
+.move-btn:hover,
+.play-btn:hover {
   transform: scale(1.07);
 }
+
