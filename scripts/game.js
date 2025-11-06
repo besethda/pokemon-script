@@ -70,10 +70,10 @@ const calculateEffectiveness = (currentPokemon, currentMove, damagedPokemon) =>{
     } });
     for (let i =0; i < damagedPokemon.type.length; i++){
       if (moveClass.moveType[0].includes(damagedPokemon.type[i][2][0])){
-        damage = 1.5
+        damage = damage * 1.5
         message = ` It's super effective!`
       } else if (moveClass.moveType[1].includes(damagedPokemon.type[i][2][0])) {
-        damage = .5
+        damage = damage * .5
         message = ` It's not very effective...`
       } 
     }
@@ -103,7 +103,6 @@ const generateRandomNumber = (range) => {
 const gameAttack = () => {
   number = generateRandomNumber(4)
   useGameAttack(gamePokemon, gamePokemon.moves[number].moveName)
-  document.addEventListener('keydown', listAttacks)
 }
 
 const pickAttack = () => printAction(`Pick a move for ${userPokemon} to use:`)
@@ -125,9 +124,8 @@ const chooseGamePokemon = () => {
 }
 
 const useGameAttack = (attackingPokemon, move) =>   {
-  clearText()
-  printAction(`${attackingPokemon.name} used ${move}!`)
-  document.addEventListener('keydown', gameAttack)
+  printAction(` ${attackingPokemon.name} used ${move}!`)
+  document.addEventListener('keydown', listAttacks)
 }
 
 const useAttack = (attackingPokemon, move) => {
