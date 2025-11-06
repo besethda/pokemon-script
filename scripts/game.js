@@ -78,7 +78,8 @@ const calculateEffectiveness = (currentPokemon, currentMove, damagedPokemon, dam
       } 
     }
     damage = damage * moveClass.damage
-    damagedPokemonHealth === gamePokemonHealth ? 
+    damagedPokemonHealth === gamePokemonHealth ? gamePokemonHealth -= damage : userPokemonHealth -= damage
+    ////Add a function that ends the game if the pokemon faints and call it here 
     message += ` ${damagedPokemon.name} took ${damage} damage.`
     return message
 }
