@@ -13,12 +13,18 @@ body {
 
 .header {
   width: 100%;
-  height: 10vh;
+  padding: 2vh;
+  height: fit-content;
   color: white;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   font-size: clamp(1rem, 2.2vw, 2.5rem);
+}
+
+.pokeball {
+  width: clamp(1.7rem, 4vw, 3.1rem);
+  height: clamp(1.7rem, 4vw, 3.1rem);
 }
 
 .title {
@@ -29,22 +35,18 @@ body {
   font-weight: 300;
 }
 
-img {
-  width: clamp(1.7rem, 4vw, 3.1rem);
-}
-
 .main {
   height: 90vh;
   background: transparent;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  margin-top: 4;
   align-items: center;
 }
 
 .game-div {
   width: 80%;
   height: 80%;
-  border: 2px solid rgba(153, 153, 153, 0.123);
   border-radius: 12px;
 }
 
@@ -60,27 +62,30 @@ img {
 }
 
 .game-text {
-  padding: 10px;
+  padding: 14px;
+  height: 100%;
+  width: 100%;
+  z-index: 30;
 }
 
 .text-area {
   width: 100%;
-  height: 35%;
+  height: fit-content;
   border-top: 2px solid rgba(153, 153, 153, 0.123);
   font-weight: 300;
-  font-size: 1.8rem;
+  font-size: clamp(1.3rem, 2.2vw, 2rem);
   color: white;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .move-div {
   padding-top: 5px;
   width: 100%;
   height: 100%;
+  min-height: 200px;
   gap: 3px;
-  border: 1px solid rgba(153, 153, 153, 0.123);
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
@@ -92,13 +97,13 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 3vh 0;
   width: calc(50% - 3px);
   border: solid 1px rgb(255, 255, 255);
-  height: 50%;
   background-blend-mode: darken;
   background-size: cover;
   color: rgb(0, 0, 0);
-  font-size: 1.7rem;
+  font-size: clamp(1.4rem, 2.3vw, 2.1rem);
   font-weight: 600;
   cursor: pointer;
 }
@@ -123,7 +128,7 @@ img {
   margin: 15px;
   width: 40%;
   min-width: 370px;
-  font-size: 1.7rem;
+  font-size: clamp(1.4rem, 2.3vw, 2.1rem);
   text-align: center;
 }
 
@@ -147,8 +152,6 @@ img {
   margin-left: 30%;
   height: 50%;
   width: auto;
-  display: flex;
-  align-items: end;
 }
 
 .game-pokemon {
@@ -156,4 +159,21 @@ img {
   width: auto;
 }
 
-.info;
+.info {
+  color: white;
+}
+
+@media (orientation: portrait) {
+
+  .user-pokemon {
+    height: 70%;
+  }
+
+  .game-pokemon {
+    height: 80%;
+  }
+
+  .input {
+    min-width: 280px;
+  }
+}

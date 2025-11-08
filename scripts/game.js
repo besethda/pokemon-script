@@ -83,7 +83,7 @@ const calculateEffectiveness = (currentPokemon, currentMove, damagedPokemon, dam
       message = ` It's super effective!`
     } else if (moveClass.moveType[1].includes(damagedPokemon.type[i][2][0])) {
       damage = damage * .5
-      message = ` It's not very effective...`
+      message = ` But it's not very effective...`
     }
   }
   damage = damage * moveClass.damage
@@ -135,7 +135,6 @@ const chooseGamePokemon = () => {
   choice = generateRandomNumber(2)
   gamePokemon = leftPokemon[choice]
   gamePokemonHealth = leftPokemon[choice].hp
-  console.log(gamePokemonHealth)
   printAction(`You got ${userPokemon.name}! Your enemy is ${gamePokemon.name}. Pick a move for ${userPokemon.name} to use:`)
   listAttacks(userPokemon)
   createImages()
@@ -156,22 +155,22 @@ const createImages = () => {
 }
 
 const removeImages = () => {
-  let userDiv = document.querySelector('.user-pokemon-div')
-  let gameDiv = document.querySelector('.game-pokemon-div')
-  userDiv.remove()
-  gameDiv.remove()
+  let userPokemonSprite = document.querySelector('.user-pokemon')
+  let gamePokemonSprite = document.querySelector('.game-pokemon')
+  userPokemonSprite.remove()
+  gamePokemonSprite.remove()
 }
 
 const useGameAttack = (attackingPokemon, move) => {
-  let message = calculateEffectiveness(attackingPokemon, move, userPokemon, userPokemonHealth )
-  let winStatus= winOrLose()
+  let message = calculateEffectiveness(attackingPokemon, move, userPokemon, userPokemonHealth)
+  let winStatus = winOrLose()
   if (winStatus === 'lose') {
     message += ` ${userPokemon.name} fainted. You lose!`
-    printAction(` ${attackingPokemon.name} used ${move}!` + message )
-    document.addEventListener('keydown', () => {playAgainInput(), clearText()}, { once: true })
+    printAction(` ${attackingPokemon.name} used ${move}!` + message)
+    document.addEventListener('keydown', () => { playAgainInput(), clearText() }, { once: true })
     return
   }
-  printAction(` ${attackingPokemon.name} used ${move}!` + message )
+  printAction(` ${attackingPokemon.name} used ${move}!` + message)
   document.addEventListener('keydown', listHealth, { once: true })
 }
 
@@ -179,12 +178,12 @@ const useAttack = (attackingPokemon, move) => {
   const MOVEDIV = document.querySelector('.move-div')
   MOVEDIV.remove()
   clearText()
-  let message = calculateEffectiveness(attackingPokemon, move, gamePokemon, gamePokemonHealth )
-  let winStatus= winOrLose()
+  let message = calculateEffectiveness(attackingPokemon, move, gamePokemon, gamePokemonHealth)
+  let winStatus = winOrLose()
   if (winStatus === 'win') {
     message += ` ${gamePokemon.name} fainted. You win!`
-    printAction(` ${attackingPokemon.name} used ${move}!` + message )
-    document.addEventListener('keydown', () => {clearText(), playAgainInput()}, { once: true })
+    printAction(` ${attackingPokemon.name} used ${move}!` + message)
+    document.addEventListener('keydown', () => { clearText(), playAgainInput() }, { once: true })
     return
   }
   printAction(`${attackingPokemon.name} used ${move}!` + message)
@@ -200,9 +199,11 @@ const listAttacks = () => {
     let activeMove = document.createElement('div')
     activeMove.className = 'move'
     activeMove.style.backgroundImage = `url('./images/${move.moveType[2]}.jpg')`
+    console.log(move.moveType[2])
+    activeMove.style.color = ['poison', 'fire'].includes(move.moveType[2][0]) ? 'white' : 'black'
     activeMove.textContent = move.moveName
     MOVEDIV.appendChild(activeMove)
-    activeMove.addEventListener('click', () => useAttack(userPokemon, activeMove.textContent), { once: true})
+    activeMove.addEventListener('click', () => useAttack(userPokemon, activeMove.textContent), { once: true })
   });
 }
 
@@ -220,19 +221,19 @@ const playAgainInput = (message = '') => {
   textArea.appendChild(MOVEDIV)
   MOVEDIV.appendChild(playAgain)
   playAgain.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        if (playAgain.value.toLowerCase() === 'y') {
-          validAnswer = true
-          clearMoves(), clearText(), chooseGamePokemon()
-        } else if (playAgain.value.toLowerCase() === 'n') {
-          clearMoves(), clearText()
-          validAnswer = true
-        } else {
-          clearText()
-          printAction('Please type either y or n...')
-        }
+    if (e.key === 'Enter') {
+      if (playAgain.value.toLowerCase() === 'y') {
+        validAnswer = true
+        clearMoves(), clearText(), chooseGamePokemon()
+      } else if (playAgain.value.toLowerCase() === 'n') {
+        clearMoves(), clearText()
+        validAnswer = true
+      } else {
+        clearText()
+        printAction('Please type either y or n...')
       }
-    }), { once: true}
+    }
+  }), { once: true }
 }
 
 addPlayBtn()
