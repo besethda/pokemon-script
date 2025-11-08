@@ -59,7 +59,15 @@ const addPlayBtn = () => {
   playBtn.className = 'play-btn'
   MOVEDIV.appendChild(playBtn)
   textArea.appendChild(MOVEDIV)
-  playBtn.addEventListener('click', () => { chooseGamePokemon(), clearMoves() })
+  playBtn.addEventListener('click', () => { chooseGamePokemon(), clearMoves() }, { once: true })
+}
+
+const winOrLose = () => {
+  if (userPokemonHealth <= 0) {
+    return `lose`
+  } else if (gamePokemonHealth <= 0) {
+    return `win`
+  } return
 }
 
 const calculateEffectiveness = (currentPokemon, currentMove, damagedPokemon, damagedPokemonHealth) => {
@@ -80,13 +88,12 @@ const calculateEffectiveness = (currentPokemon, currentMove, damagedPokemon, dam
   }
   damage = damage * moveClass.damage
   damagedPokemonHealth === gamePokemonHealth ? gamePokemonHealth -= damage : userPokemonHealth -= damage
-  ////Add a function that ends the game if the pokemon faints and call it here 
   message += ` ${damagedPokemon.name} took ${damage} damage.`
   return message
 }
 
 const printAction = (action, i = 0) => {
-  let speed = 20
+  let speed = 10
   const actionText = document.querySelector('.game-text')
   if (actionText.textContent === 0) {
     actionText.textContent = ''
@@ -124,28 +131,43 @@ const chooseGamePokemon = () => {
   let availablePokemon = [BLASTOISE, VENUSAUR, CHARIZARD]
   userPokemon = availablePokemon[choice]
   userPokemonHealth = availablePokemon[choice].hp
+  userPokemonImg = `<a href="https://pokemondb.net/pokedex/${userPokemon.name.toLowerCase}"><img src="https://img.pokemondb.net/sprites/black-white/anim/back-normal/${userPokemon.name.toLowerCase}.gif" alt="${userPokemon.name}"></a>`
   let leftPokemon = availablePokemon.filter((pokemon) => pokemon !== availablePokemon[choice])
   choice = generateRandomNumber(2)
   gamePokemon = leftPokemon[choice]
   gamePokemonHealth = leftPokemon[choice].hp
   console.log(gamePokemonHealth)
-  playBtn = document.querySelector('.play-btn')
-  playBtn.remove()
   printAction(`You got ${userPokemon.name}! Your enemy is ${gamePokemon.name}. Pick a move for ${userPokemon.name} to use:`)
   listAttacks(userPokemon)
   return
 }
 
 const useGameAttack = (attackingPokemon, move) => {
-  printAction(` ${attackingPokemon.name} used ${move}!`)
+  let message = calculateEffectiveness(attackingPokemon, move, userPokemon, userPokemonHealth )
+  let winStatus= winOrLose()
+  if (winStatus === 'lose') {
+    message += ` ${userPokemon.name} fainted. You lose!`
+    printAction(` ${attackingPokemon.name} used ${move}!` + message )
+    document.addEventListener('keydown', () => {playAgainInput(), clearText()}, { once: true })
+    return
+  }
+  printAction(` ${attackingPokemon.name} used ${move}!` + message )
   document.addEventListener('keydown', listHealth, { once: true })
 }
 
 const useAttack = (attackingPokemon, move) => {
   const MOVEDIV = document.querySelector('.move-div')
   MOVEDIV.remove()
-  clearText(), clearMoves()
-  printAction(`${attackingPokemon.name} used ${move}!` + calculateEffectiveness(attackingPokemon, move, gamePokemon, gamePokemonHealth))
+  clearText()
+  let message = calculateEffectiveness(attackingPokemon, move, gamePokemon, gamePokemonHealth )
+  let winStatus= winOrLose()
+  if (winStatus === 'win') {
+    message += ` ${gamePokemon.name} fainted. You win!`
+    printAction(` ${attackingPokemon.name} used ${move}!` + message )
+    document.addEventListener('keydown', () => {clearText(), playAgainInput()}, { once: true })
+    return
+  }
+  printAction(`${attackingPokemon.name} used ${move}!` + message)
   document.addEventListener('keydown', () => gameAttack(), { once: true })
 }
 
@@ -160,8 +182,36 @@ const listAttacks = () => {
     activeMove.style.backgroundImage = `url('./images/${move.moveType[2]}.jpg')`
     activeMove.textContent = move.moveName
     MOVEDIV.appendChild(activeMove)
-    activeMove.addEventListener('click', () => useAttack(userPokemon, activeMove.textContent))
+    activeMove.addEventListener('click', () => useAttack(userPokemon, activeMove.textContent), { once: true})
   });
+}
+
+const playAgainInput = (message = '') => {
+  message = `Would you like to play again? Type y or n:`
+  printAction(message)
+  let playAgain = document.createElement('input')
+  playAgain.setAttribute('type', 'text')
+  playAgain.className = ('input')
+  playAgain.placeholder = (`Type 'y' or 'n' and press enter.`)
+  const textArea = document.querySelector('.text-area')
+  const MOVEDIV = document.createElement('div')
+  MOVEDIV.className = 'move-div'
+  textArea.appendChild(MOVEDIV)
+  MOVEDIV.appendChild(playAgain)
+  playAgain.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        if (playAgain.value.toLowerCase() === 'y') {
+          validAnswer = true
+          clearMoves(), clearText(), chooseGamePokemon()
+        } else if (playAgain.value.toLowerCase() === 'n') {
+          clearMoves(), clearText()
+          validAnswer = true
+        } else {
+          clearText()
+          printAction('Please type either y or n...')
+        }
+      }
+    }), { once: true}
 }
 
 addPlayBtn()
