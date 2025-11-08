@@ -73,7 +73,7 @@ body {
   height: fit-content;
   border-top: 2px solid rgba(153, 153, 153, 0.123);
   font-weight: 300;
-  font-size: clamp(1.3rem, 2.2vw, 2rem);
+  font-size: clamp(1.4rem, 2.4vw, 2.2rem);
   color: white;
   display: flex;
   flex-direction: column;
@@ -97,8 +97,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 3vh 0;
   width: calc(50% - 3px);
+  min-height: 80px;
+  height: 13vh;
   border: solid 1px rgb(255, 255, 255);
   background-blend-mode: darken;
   background-size: cover;
@@ -106,22 +107,28 @@ body {
   font-size: clamp(1.4rem, 2.3vw, 2.1rem);
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.4s ease-in-out;
+}
+
+.move:hover {
+  font-size: clamp(1.7rem, 2.7vw, 2.5rem);
 }
 
 .play-btn {
-  width: 46%;
+  width: 25vw;
+  min-width: 180px;
   padding: 5px 0;
   margin: 5px 0;
   font-size: 1.5rem;
-  border: none;
-  border-radius: 8px;
+  border: 1px solid white;
+  border-radius: 15%;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.9s ease-in-out;
+  animation: bounce 5s infinite;
 }
 
-.move-btn:hover,
 .play-btn:hover {
-  transform: scale(1.07);
+  background: linear-gradient(to right, rgb(199, 199, 199), grey);
 }
 
 .input {
@@ -163,8 +170,19 @@ body {
   color: white;
 }
 
-@media (orientation: portrait) {
+@keyframes bounce {
+  0% {
+    transform: rotate(0deg) scale(1.1) translateY(0);
+  }
+  50% {
+    transform: rotate(3deg) scale(1) translateY(15px);
+  }
+  100% {
+    transform: rotate(0deg) scale(1.1) translateY(0);
+  }
+}
 
+@media (orientation: portrait) {
   .user-pokemon {
     height: 70%;
   }

@@ -54,8 +54,8 @@ const addPlayBtn = () => {
   const textArea = document.querySelector('.text-area')
   const MOVEDIV = document.createElement('div')
   MOVEDIV.className = 'move-div'
-  const playBtn = document.createElement('button')
-  playBtn.textContent = 'Play Game'
+  const playBtn = document.createElement('img')
+  playBtn.src = './images/play.png'
   playBtn.className = 'play-btn'
   MOVEDIV.appendChild(playBtn)
   textArea.appendChild(MOVEDIV)
@@ -167,7 +167,7 @@ const useGameAttack = (attackingPokemon, move) => {
   if (winStatus === 'lose') {
     message += ` ${userPokemon.name} fainted. You lose!`
     printAction(` ${attackingPokemon.name} used ${move}!` + message)
-    document.addEventListener('keydown', () => { playAgainInput(), clearText() }, { once: true })
+    document.addEventListener('keydown', () => { clearText(), playAgainInput() }, { once: true })
     return
   }
   printAction(` ${attackingPokemon.name} used ${move}!` + message)
@@ -209,7 +209,7 @@ const listAttacks = () => {
 
 const playAgainInput = (message = '') => {
   removeImages()
-  message = `Would you like to play again? Type y or n:`
+  message = `Would you like to play again? Type 'y' or 'n':`
   printAction(message)
   let playAgain = document.createElement('input')
   playAgain.setAttribute('type', 'text')
@@ -230,7 +230,7 @@ const playAgainInput = (message = '') => {
         validAnswer = true
       } else {
         clearText()
-        printAction('Please type either y or n...')
+        printAction(`Please type either 'y' or 'n'...`)
       }
     }
   }), { once: true }
