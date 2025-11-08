@@ -48,7 +48,7 @@ let gamePokemonHealth
 
 const clearText = () => document.querySelector('.game-text').textContent = ''
 
-const clearMoves = () =>   document.querySelector('.move-div').remove()
+const clearMoves = () => document.querySelector('.move-div').remove()
 
 const addPlayBtn = () => {
   const textArea = document.querySelector('.text-area')
@@ -59,35 +59,36 @@ const addPlayBtn = () => {
   playBtn.className = 'play-btn'
   MOVEDIV.appendChild(playBtn)
   textArea.appendChild(MOVEDIV)
-  playBtn.addEventListener('click', chooseGamePokemon)
+  playBtn.addEventListener('click', () => { chooseGamePokemon(), clearMoves() })
 }
 
-const calculateEffectiveness = (currentPokemon, currentMove, damagedPokemon, damagedPokemonHealth) =>{
+const calculateEffectiveness = (currentPokemon, currentMove, damagedPokemon, damagedPokemonHealth) => {
   let moveClass, message = '', damage = 1
   currentPokemon.moves.forEach(move => {
-    if (move.moveName === currentMove){
+    if (move.moveName === currentMove) {
       moveClass = move
-    } });
-    for (let i =0; i < damagedPokemon.type.length; i++){
-      if (moveClass.moveType[0].includes(damagedPokemon.type[i][2][0])){
-        damage = damage * 1.5
-        message = ` It's super effective!`
-      } else if (moveClass.moveType[1].includes(damagedPokemon.type[i][2][0])) {
-        damage = damage * .5
-        message = ` It's not very effective...`
-      } 
     }
-    damage = damage * moveClass.damage
-    damagedPokemonHealth === gamePokemonHealth ? gamePokemonHealth -= damage : userPokemonHealth -= damage
-    ////Add a function that ends the game if the pokemon faints and call it here 
-    message += ` ${damagedPokemon.name} took ${damage} damage.`
-    return message
+  });
+  for (let i = 0; i < damagedPokemon.type.length; i++) {
+    if (moveClass.moveType[0].includes(damagedPokemon.type[i][2][0])) {
+      damage = damage * 1.5
+      message = ` It's super effective!`
+    } else if (moveClass.moveType[1].includes(damagedPokemon.type[i][2][0])) {
+      damage = damage * .5
+      message = ` It's not very effective...`
+    }
+  }
+  damage = damage * moveClass.damage
+  damagedPokemonHealth === gamePokemonHealth ? gamePokemonHealth -= damage : userPokemonHealth -= damage
+  ////Add a function that ends the game if the pokemon faints and call it here 
+  message += ` ${damagedPokemon.name} took ${damage} damage.`
+  return message
 }
 
-const printAction = (action, i=0) => {
+const printAction = (action, i = 0) => {
   let speed = 20
   const actionText = document.querySelector('.game-text')
-  if (actionText.textContent === 0){
+  if (actionText.textContent === 0) {
     actionText.textContent = ''
   } if (i < action.length) {
     actionText.textContent += action.charAt(i)
@@ -115,7 +116,7 @@ const pickAttack = () => {
 const listHealth = () => {
   clearText()
   printAction(`Your ${userPokemon.name} has ${userPokemonHealth} HP. Foe ${gamePokemon.name} has ${gamePokemonHealth} HP.`)
-  document.addEventListener('keydown', () => (pickAttack(), listAttacks()), {once:true})
+  document.addEventListener('keydown', () => (pickAttack(), listAttacks()), { once: true })
 }
 
 const chooseGamePokemon = () => {
@@ -125,7 +126,7 @@ const chooseGamePokemon = () => {
   userPokemonHealth = availablePokemon[choice].hp
   let leftPokemon = availablePokemon.filter((pokemon) => pokemon !== availablePokemon[choice])
   choice = generateRandomNumber(2)
-  gamePokemon =leftPokemon[choice]
+  gamePokemon = leftPokemon[choice]
   gamePokemonHealth = leftPokemon[choice].hp
   console.log(gamePokemonHealth)
   playBtn = document.querySelector('.play-btn')
@@ -135,9 +136,9 @@ const chooseGamePokemon = () => {
   return
 }
 
-const useGameAttack = (attackingPokemon, move) =>   {
+const useGameAttack = (attackingPokemon, move) => {
   printAction(` ${attackingPokemon.name} used ${move}!`)
-  document.addEventListener('keydown', listHealth, {once:true})
+  document.addEventListener('keydown', listHealth, { once: true })
 }
 
 const useAttack = (attackingPokemon, move) => {
@@ -145,7 +146,7 @@ const useAttack = (attackingPokemon, move) => {
   MOVEDIV.remove()
   clearText(), clearMoves()
   printAction(`${attackingPokemon.name} used ${move}!` + calculateEffectiveness(attackingPokemon, move, gamePokemon, gamePokemonHealth))
-  document.addEventListener('keydown', () => gameAttack(), {once:true})
+  document.addEventListener('keydown', () => gameAttack(), { once: true })
 }
 
 const listAttacks = () => {
@@ -154,8 +155,9 @@ const listAttacks = () => {
   MOVEDIV.className = 'move-div'
   textArea.appendChild(MOVEDIV)
   userPokemon.moves.forEach(move => {
-    let activeMove = document.createElement('button')
-    activeMove.className = 'move-btn'
+    let activeMove = document.createElement('div')
+    activeMove.className = 'move'
+    activeMove.style.backgroundImage = `url('./images/${move.moveType[2]}.jpg')`
     activeMove.textContent = move.moveName
     MOVEDIV.appendChild(activeMove)
     activeMove.addEventListener('click', () => useAttack(userPokemon, activeMove.textContent))
