@@ -131,7 +131,6 @@ const chooseGamePokemon = () => {
   let availablePokemon = [BLASTOISE, VENUSAUR, CHARIZARD]
   userPokemon = availablePokemon[choice]
   userPokemonHealth = availablePokemon[choice].hp
-  userPokemonImg = `<a href="https://pokemondb.net/pokedex/${userPokemon.name.toLowerCase}"><img src="https://img.pokemondb.net/sprites/black-white/anim/back-normal/${userPokemon.name.toLowerCase}.gif" alt="${userPokemon.name}"></a>`
   let leftPokemon = availablePokemon.filter((pokemon) => pokemon !== availablePokemon[choice])
   choice = generateRandomNumber(2)
   gamePokemon = leftPokemon[choice]
@@ -139,7 +138,25 @@ const chooseGamePokemon = () => {
   console.log(gamePokemonHealth)
   printAction(`You got ${userPokemon.name}! Your enemy is ${gamePokemon.name}. Pick a move for ${userPokemon.name} to use:`)
   listAttacks(userPokemon)
+  createImages()
   return
+}
+
+const createImages = () => {
+  let userDiv = document.querySelector('.user-pokemon-div')
+  let gameDiv = document.querySelector('.game-pokemon-div')
+  let gamePokemonSprite = document.createElement('img')
+  gamePokemonSprite.src = `https://img.pokemondb.net/sprites/black-white/anim/normal/${gamePokemon.name.toLowerCase()}.gif`
+  gamePokemonSprite.className = 'game-pokemon'
+  let userPokemonSprite = document.createElement('img')
+  userPokemonSprite.src = `https://img.pokemondb.net/sprites/black-white/anim/back-normal/${userPokemon.name.toLowerCase()}.gif`
+  userPokemonSprite.className = 'user-pokemon'
+  let platform = document.createElement('img')
+  platform.src = './images/ground.png'
+  platform.className = 'platform'
+  gameDiv.appendChild(platform)
+  gameDiv.appendChild(gamePokemonSprite)
+  userDiv.appendChild(userPokemonSprite)
 }
 
 const useGameAttack = (attackingPokemon, move) => {

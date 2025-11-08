@@ -50,7 +50,13 @@ img {
 
 .game-area {
   width: 100%;
-  height: 70%;
+  height: 65%;
+  background-image: url('../images/scene.jpg');
+  background-size: cover;
+  padding-top: 3%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .game-text {
@@ -59,7 +65,7 @@ img {
 
 .text-area {
   width: 100%;
-  height: 30%;
+  height: 35%;
   border-top: 2px solid rgba(153, 153, 153, 0.123);
   font-weight: 300;
   font-size: 1.8rem;
@@ -116,6 +122,40 @@ img {
 .input {
   margin: 15px;
   width: 40%;
+  min-width: 370px;
   font-size: 1.7rem;
   text-align: center;
+}
+
+.user-pokemon,
+.game-pokemon {
+  z-index: 20;
+}
+
+.user-pokemon-div {
+  margin-right: 30%;
+  height: 60%;
+  width: auto;
+}
+
+.user-pokemon {
+  height: 100%;
+  width: auto;
+}
+
+.game-pokemon-div {
+  margin-left: 30%;
+  height: 50%;
+  width: auto;
+  display: flex;
+  align-items: end;
+}
+
+.game-pokemon {
+  height: 100%;
+  width: auto;
+}
+
+.platform {
+
 }
