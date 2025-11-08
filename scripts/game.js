@@ -151,12 +151,15 @@ const createImages = () => {
   let userPokemonSprite = document.createElement('img')
   userPokemonSprite.src = `https://img.pokemondb.net/sprites/black-white/anim/back-normal/${userPokemon.name.toLowerCase()}.gif`
   userPokemonSprite.className = 'user-pokemon'
-  let platform = document.createElement('img')
-  platform.src = './images/ground.png'
-  platform.className = 'platform'
-  gameDiv.appendChild(platform)
   gameDiv.appendChild(gamePokemonSprite)
   userDiv.appendChild(userPokemonSprite)
+}
+
+const removeImages = () => {
+  let userDiv = document.querySelector('.user-pokemon-div')
+  let gameDiv = document.querySelector('.game-pokemon-div')
+  userDiv.remove()
+  gameDiv.remove()
 }
 
 const useGameAttack = (attackingPokemon, move) => {
@@ -204,6 +207,7 @@ const listAttacks = () => {
 }
 
 const playAgainInput = (message = '') => {
+  removeImages()
   message = `Would you like to play again? Type y or n:`
   printAction(message)
   let playAgain = document.createElement('input')
